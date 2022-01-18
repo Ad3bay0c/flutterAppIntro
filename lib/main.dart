@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 import './quiz.dart';
@@ -19,37 +17,64 @@ class _MyAppState extends State<MyApp> {
   final questions = const [
     {
       'questionText': 'What\'s your favorite color?',
-      'answers': ['Red', 'Green', 'Blue', 'White']
+      'answers': [
+        {'text': 'Red', 'score': 5},
+        {'text': 'Green', 'score': 10},
+        {'text': 'Blue', 'score': 7},
+        {'text': 'White', 'score': 3}
+      ]
     },
     {
       'questionText': 'What\'s your favorite animal?',
-      'answers': ['Rabbit', 'Snake', 'Elephant', 'Lion']
+      'answers': [
+        {'text': 'Rabbit', 'score': 5},
+        {'text': 'Pig', 'score': 10},
+        {'text': 'Dog', 'score': 7},
+        {'text': 'Lion', 'score': 3}
+      ]
     },
     {
       'questionText': 'What\'s your favorite food?',
-      'answers': ['Pizza', 'Pasta', 'Sushi', 'Cake']
+      'answers': [
+        {'text': 'Pizza', 'score': 5},
+        {'text': 'Sharwarma', 'score': 10},
+        {'text': 'Cake', 'score': 7},
+        {'text': 'Salad', 'score': 3}
+      ]
     }
   ];
 
   var _questionIndex = 0;
+  var _totalScore = 0;
+  void _answerQuestion(int score) {
+    _totalScore += score;
 
-  void _answerQuestion() {
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
     print(_questionIndex);
   }
 
+  void _resetQuestion() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('My First App'),
+          title: Text('My Quiz App'),
         ),
         body: _questionIndex < questions.length
-            ? Quiz(questions[_questionIndex]['questionText'], questions[_questionIndex]['answers'] as List<String>, _answerQuestion)
-            : Result(),
+            ? Quiz(
+                questions: questions,
+                questionIndex: _questionIndex,
+                selectHandler: _answerQuestion,
+              )
+            : Result(_totalScore, _resetQuestion),
       ),
     );
   }
